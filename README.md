@@ -1,3 +1,3 @@
-# nodestrap
+# node-di
 
-Node.js library template 
+Dependency Injection for Node.js
