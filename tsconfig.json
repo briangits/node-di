@@ -24,9 +24,7 @@
         "isolatedModules": true,
 
         // Path Aliases
-        "paths": {
-            "@test": ["./src/test.ts"]
-        }
+        "paths": {}
     },
     "include": ["src"],
     "exclude": ["node_modules", "dist"]
