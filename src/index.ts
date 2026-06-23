@@ -3,3 +3,5 @@ export * from './Binding'
 export * from './Binder'
 export * from './InjectionToken'
 export * from './DIContainer'
+
+export { injectionToken, createContainer, injector } from './util'

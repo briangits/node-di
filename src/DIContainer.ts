@@ -51,7 +51,7 @@ export class DIContainer {
         return this.resolve(binding, [])
     }
 
-    factory<T, Args extends unknown[] = []>(token: InjectionToken<T>): Factory<T, Args> {
+    factory<T, Args extends unknown[] = any[]>(token: InjectionToken<T>): Factory<T, Args> {
         const binding = this.bindings.get(token)
         if (!binding) throw new Error(`No binding for ${String(token)}`)
 
