@@ -11,6 +11,15 @@ describe('Utilities', () => {
 
             expect(container.get(token)).toBe('node-di')
         })
+
+        it('should support destructuring container methods in the builder', () => {
+            const token = injectionToken<string>('app-name')
+            const container = createContainer(({ bindSingleton }) => {
+                bindSingleton(token, 'destructured-node-di')
+            })
+
+            expect(container.get(token)).toBe('destructured-node-di')
+        })
     })
 
     describe('injector', () => {
