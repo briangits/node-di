@@ -33,6 +33,7 @@
         "lint": "prettier --check '**/*' --ignore-path .gitignore --ignore-unknown",
         "format": "prettier --write '**/*' --ignore-path .gitignore --ignore-unknown",
         "build": "tsdown -c tsdown.config.ts",
+        "test": "vitest run --passWithNoTests --reporter verbose",
         "prepublishOnly": "pnpm run lint && pnpm run build"
     },
     "devEngines": {
@@ -46,7 +47,8 @@
         "@types/node": "^25.9.3",
         "prettier": "^3.8.4",
         "prettier-plugin-organize-imports": "^4.3.0",
-        "tsdown": "^0.22.3"
+        "tsdown": "^0.22.3",
+        "vitest": "^4.1.9"
     },
     "prettier": {
         "printWidth": 100,
