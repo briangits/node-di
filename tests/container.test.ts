@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DIContainer } from '../src'
-import { injectionToken } from '../src'
+import { DIContainer, injectionToken } from '../src'
 
 describe('DIContainer', () => {
     it('should resolve transient bindings with new instances', () => {

@@ -1,7 +1,7 @@
-export * from './Factory'
-export * from './Binding'
 export * from './Binder'
-export * from './InjectionToken'
+export * from './Binding'
 export * from './DIContainer'
+export * from './Factory'
+export * from './InjectionToken'
 
-export { injectionToken, createContainer, injector } from './util'
+export { createContainer, injectionToken, injector } from './util'

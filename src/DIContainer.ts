@@ -1,7 +1,7 @@
-import { Constructor, InjectionToken } from './InjectionToken'
-import { Binding, BindingLifetime } from './Binding'
 import { Binder } from './Binder'
+import { Binding, BindingLifetime } from './Binding'
 import { Factory } from './Factory'
+import { Constructor, InjectionToken } from './InjectionToken'
 
 export class DIContainer {
     private readonly bindings = new Map<InjectionToken<any>, Binding<any, any>>()
@@ -20,11 +20,9 @@ export class DIContainer {
     bindSingleton<T>(constructor: new () => T): void
     bindSingleton<T>(token: InjectionToken<T>, factory: Factory<T>): void
     bindSingleton<T>(token: InjectionToken<T>, instance: T): void
-    bindSingleton<T>(
-        ...args: [Constructor<T>] | [InjectionToken<T>, Factory<T> | T]
-    ): void {
+    bindSingleton<T>(...args: [Constructor<T>] | [InjectionToken<T>, Factory<T> | T]): void {
         if (args.length === 1)
-            return this.bind(args[0]).toSingleton(() => new (args[0] as new () => any))
+            return this.bind(args[0]).toSingleton(() => new (args[0] as new () => any)())
 
         if (typeof args[1] === 'function')
             return this.bind(args[0]).toSingleton(args[1] as Factory<T>)
