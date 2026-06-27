@@ -10,8 +10,9 @@ export interface Injector {
      *
      * @template T - The type of the dependency to resolve.
      * @param token - The InjectionToken associated with the dependency.
+     * @param args - Optional arguments to pass to the factory function during resolution.
      * @returns The resolved dependency instance.
      * @throws An error if the token is not registered.
      */
-    <T>(token: InjectionToken<T>): T
+    <T, Args extends unknown[] = any[]>(token: InjectionToken<T>, ...args: Args): T
 }

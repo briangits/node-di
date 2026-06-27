@@ -100,7 +100,7 @@ export class DIContainer {
      * @param args - The arguments to pass into the factory function.
      * @returns The resolved dependency instance.
      */
-    private resolve<T, Args extends unknown[]>(binding: Binding<T, Args>, args: Args): T {
+    private resolve<T, Args extends unknown[]>(binding: Binding<T, Args>, ...args: Args): T {
         if (binding.lifetime === BindingLifetime.Singleton) {
             if (binding.instance === undefined) {
                 binding.instance = binding.factory(...args)
@@ -116,15 +116,17 @@ export class DIContainer {
      * Retrieves the resolved instance associated with the specified injection token.
      *
      * @template T - The type of the dependency to retrieve.
+     * @template Args - The custom arguments expected by the factory function.
      * @param token - The InjectionToken lookup key.
+     * @param args - Optional arguments to pass to the factory function.
      * @returns The resolved instance.
      * @throws An error if no binding is configured for the given token.
      */
-    get<T>(token: InjectionToken<T>): T {
+    get<T, Args extends unknown[] = any[]>(token: InjectionToken<T>, ...args: Args): T {
         const binding = this.bindings.get(token)
         if (!binding) throw new Error(`No binding for ${String(token)}`)
 
-        return this.resolve(binding, [])
+        return this.resolve(binding, ...args)
     }
 
     /**
