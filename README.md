@@ -2,13 +2,29 @@
 
 A lightweight, type-safe dependency injection (DI) container for Node.js.
 
+```typescript
+const DI = createContainer(({ bindFactory, bindSigleton }) => {
+    bindFactory(Dice, () => new Dice())
+    
+    bindSingleton(DiceRoller, new MyDiceRoller())
+})
+
+// inject dependencies
+const dice = inject(Dice)
+const roller = inject(DiceRoller)
+
+roller.roll(dice)
+```
+
+<br />
+
 ## Features
 
-- **Type-safe resolution**: Full TypeScript integration for type-safe bindings and resolutions.
-- **Zero dependencies**: Pure, minimal implementation with no external runtime dependencies.
-- **Multiple token types**: Supports class constructors, symbols, and string-based tokens.
-- **Flexible lifetimes**: Supports transient (always fresh) and singleton (cached) instance lifetimes.
-- **Shorthand utilities**: Functional helpers for container creation and resolution.
+- Type-safe bindings and resolutions.
+- No decorators, no reflect-metadata, no magic.
+- Zero external dependencies.
+- Providers: supports singletons and transient instances.
+- Use class constructors, symbols, and strings as injection tokens.
 
 ## Installation
 
@@ -22,65 +38,48 @@ yarn add @briangits/node-di
 
 ## Basic Usage
 
-### 1. Define Services
-
-```typescript
-class DatabaseService {
-    public query(sql: string) {
-        return `Executing: ${sql}`
-    }
-}
-
-class UserService {
-    constructor(private db: DatabaseService) {}
-
-    public getUser(id: string) {
-        return this.db.query(`SELECT * FROM users WHERE id = '${id}'`)
-    }
-}
-```
-
-### 2. Configure the Container
-
-Use `createContainer` to instantiate and configure your dependencies:
+Use `createContainer` to instantiate and configure your DI container:
 
 ```typescript
 import { createContainer } from '@briangits/node-di'
 
 const DI = createContainer(c => {
-    // Bind DatabaseService as a singleton
-    c.bindSingleton(DatabaseService)
+    // Bind a Dice factory
+    c.bindFactory(Dice, () => new Dice())
 
-    // Bind UserService as a singleton, injecting the DatabaseService instance
-    c.bindSingleton(UserService, () => {
-        const db = c.get(DatabaseService)
-        return new UserService(db)
-    })
+    // Bind a DiceRoller service as a singleton
+    c.bindSingleton(DiceRoller, MyDiceRoller)
+    //or
+    c.bindSingleton(DiceRoller, new MyDiceRoller(c.get(MyOtherDependency)))
 })
 ```
 
-Container methods are bound to the instance, so they can be safely destructured in the builder callback:
+Container methods can also be destructured in the builder callback:
 
 ```typescript
 const DI = createContainer(({ bind, bindSingleton, bindFactory, get }) => {
-    bindSingleton(DatabaseService)
+    bindFactory(Dice, (salt: string) => new SaltedDice(salt))
 
-    bindSingleton(UserService, () => {
-        const db = get(DatabaseService)
-        return new UserService(db)
-    })
+    bindSingleton(DiceRoller, () => new MyDiceRoller())
 })
 ```
 
-### 3. Resolve Dependencies
+### Resolve Dependencies
 
 ```typescript
+// create a short-hand injector function
 import { injector } from '@briangits/node-di'
 
 const inject = injector(DI)
 
-const userService = inject(UserService)
-console.log(userService.getUser('123'))
+// inject yor dependencies
+const dice = inject(Dice)
+const roller = inject(DiceRoller)
+// you can also pass data to the binding factory
+const saltedDice = inject(Dice, 'salt-123') 
+
+// roll your dice
+roller.roll(dice)
 ```
 
 ## Core Concepts
@@ -113,7 +112,7 @@ const config = inject(CONFIG_TOKEN)
 
 ### Lifetimes
 
-The library supports two lifetimes:
+You can register your binding with either singleton or transient lifetimes:
 
 - **Singleton**: The dependency is resolved and instantiated once (lazily, when first requested). Subsequent resolutions return the same cached instance.
 - **Transient**: The dependency's factory function is executed on every resolution request, returning a new instance every time.
@@ -155,9 +154,9 @@ Returns a reusable factory function linked to the binding. You can call the retu
 
 ```typescript
 const greetToken = injectionToken<string>('greeter')
-container.bindFactory(greetToken, (name: string) => `Hello, ${name}`)
+DI.bindFactory(greetToken, (name: string) => `Hello, ${name}`)
 
-const greet = container.factory<string, [string]>(greetToken)
+const greet = DI.factory<string, [string]>(greetToken)
 console.log(greet('Alice')) // "Hello, Alice"
 ```
 
@@ -184,6 +183,9 @@ const inject = injector(container)
 
 // Shorthand resolution syntax
 const db = inject(DatabaseService)
+
+// You can also pass arguments to factories
+const dice = inject(Logger, '<request-id>')
 ```
 
 #### `injectionToken<T>(key: Constructor<T> | symbol | string): InjectionToken<T>`
@@ -192,4 +194,4 @@ Casts or assigns a type signature `T` to a token key (such as a string or symbol
 
 ## License
 
-This project is licensed under the Apache-2.0 License.
+Apache-2.0
