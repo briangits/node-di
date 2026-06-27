@@ -13,7 +13,7 @@ import { Injector } from '../Injector'
  * @returns An {@link Injector} shorthand function.
  */
 export function injector(container: DIContainer): Injector {
-    return <T, Args extends unknown[] = any[]> (token: InjectionToken<T>, ...args: Args) => {
+    return <T, Args extends unknown[] = any[]>(token: InjectionToken<T>, ...args: Args) => {
         return container.get(token, ...args)
     }
 }

@@ -5,7 +5,7 @@ A lightweight, type-safe dependency injection (DI) container for Node.js.
 ```typescript
 const DI = createContainer(({ bindFactory, bindSigleton }) => {
     bindFactory(Dice, () => new Dice())
-    
+
     bindSingleton(DiceRoller, new MyDiceRoller())
 })
 
@@ -76,7 +76,7 @@ const inject = injector(DI)
 const dice = inject(Dice)
 const roller = inject(DiceRoller)
 // you can also pass data to the binding factory
-const saltedDice = inject(Dice, 'salt-123') 
+const saltedDice = inject(Dice, 'salt-123')
 
 // roll your dice
 roller.roll(dice)
